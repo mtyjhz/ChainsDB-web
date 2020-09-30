@@ -1,0 +1,177 @@
+<!--
+ * @Author: cuijiajun
+ * @Date: 2020-09-30 14:30:48
+ * @LastEditors: cuijiajun
+ * @LastEditTime: 2020-09-30 17:48:51
+ * @FilePath: /sr2/index.html
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ETH</title>
+  <link rel="stylesheet" href="demo.css" />
+  <!-- <link rel="stylesheet" href="table.css" /> -->
+  <link rel='stylesheet' href='./stylesheets/style.css' />
+  <link rel="stylesheet" href="./stylesheets/bootstrap.min.css">
+  <link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet">
+  <script src="./javascripts/jquery.min.js"></script>
+  <script src="./javascripts/colResizable.min.js"></script>
+  <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+  <script src="./javascripts/dataTables/dataTables.bootstrap.js"></script>
+  <script src="./javascripts/colReorder.dataTables.js"></script>
+  <script src="./javascripts/dataTables.colReorder.min.js"></script>
+  <script src="./javascripts/colReorder.bootstrap.min.js"></script>
+
+  <script src="./source/j2h-converter.js"></script>
+  <style>
+    table {
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      word-break: keep-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -moz-text-overflow: ellipsis;
+    }
+
+    /* table
+    {
+            table-layout:fixed;
+    }
+        table td {
+          word-break: break-all; 
+
+        }*/
+  </style>
+  <script type="text/javascript">
+    function ajax(setting) {
+      //设置参数的初始值
+      var opts = {
+        method: (setting.method || "GET").toUpperCase(), //请求方式
+        url: setting.url || "", // 请求地址
+        async: setting.async || true, // 是否异步
+        dataType: setting.dataType || "json", // 解析方式
+        data: setting.data || "", // 参数
+        success: setting.success || function () { }, // 请求成功回调
+        error: setting.error || function () { } // 请求失败回调
+      }
+
+      // 参数格式化
+      function params_format(obj) {
+        var str = ''
+        for (var i in obj) {
+          str += i + '=' + obj[i] + '&'
+        }
+        return str.split('').slice(0, -1).join('')
+      }
+
+      // 创建ajax对象
+      var xhr = new XMLHttpRequest();
+
+      // 连接服务器open(方法GET/POST，请求地址， 异步传输)
+      if (opts.method == 'GET') {
+        xhr.open(opts.method, opts.url + "?" + params_format(opts.data), opts.async);
+        xhr.send();
+      } else {
+        xhr.open(opts.method, opts.url, opts.async);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(opts.data));
+      }
+
+      /*
+      ** 每当readyState改变时，就会触发onreadystatechange事件
+      ** readyState属性存储有XMLHttpRequest的状态信息
+      ** 0 ：请求未初始化
+      ** 1 ：服务器连接已建立
+      ** 2 ：请求已接受
+      ** 3 : 请求处理中
+      ** 4 ：请求已完成，且相应就绪
+      */
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 304)) {
+          switch (opts.dataType) {
+            case "json":
+              var json = JSON.parse(xhr.responseText);
+              opts.success(json);
+              break;
+            case "xml":
+              opts.success(xhr.responseXML);
+              break;
+            default:
+              opts.success(xhr.responseText);
+              break;
+          }
+        }
+      }
+
+      xhr.onerror = function (err) {
+        opts.error(err);
+      }
+    }
+    function transformObject(keyArr, valueArr) {
+      var obj = {};
+      keyArr.map((v, i) => {
+        obj[keyArr[i]] = valueArr[i];
+      })
+      return obj;
+    }
+
+    function jsonToHtmlTable() {
+      ajax({
+        url: 'http://10.0.0.47:8031/sqlQuery/',
+        method: 'POST',
+        data: {
+          "sql": $('#txtJson').val()
+        },
+        success: (res) => {
+
+
+          let resultDate = []
+          if (res.data.columns.length > 0 && res.code === 0) {
+          //   console.log(res);
+            let keyArr = res.data.columns.map(item => item.name)
+            for (let index = 0; index < res.data.rows.length; index++) {
+              // const element = array[index];
+              resultDate.push(transformObject(keyArr, res.data.rows[index]))
+            }
+          }
+
+          var j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
+          j2ht.attributes = { class: 'j2ht_table table table-striped table-bordered table-hover dataTables-example', cellspacing: '1', cellpadding: '2', };
+          j2ht.convert();
+
+          $('.j2ht_table').dataTable({
+            "ordering": false,
+            colReorder: {
+              realtime: true
+            },
+            autoFill: {
+              update: false
+            }
+          });
+          $('.j2ht_table').colResizable();
+        }
+      })
+    }
+
+    window.addEventListener('load', function () {
+      var btnConvert = document.querySelector('#btnConvert');
+      btnConvert.addEventListener('click', jsonToHtmlTable);
+    });
+  </script>
+</head>
+
+<body>
+  <textarea id="txtJson" placeholder="请输入查询语句" class="json_input" rows="10"></textarea><br /><br />
+  <input id="btnConvert" type="button" value="convert" class="convert_btn" /><br /><br />
+  <div id="divMain">
+    <table class="j2ht_table table table-striped table-bordered table-hover dataTables-example"></table>
+  </div>
+</body>
+
+
+</html>
