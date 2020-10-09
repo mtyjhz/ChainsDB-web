@@ -1,12 +1,14 @@
 /*
  * @Author: 崔佳俊
  * @Date: 2020-10-07 14:18:34
- * @LastEditors: 崔佳俊
- * @LastEditTime: 2020-10-07 14:46:40
- * @FilePath: /chainsdb/src/libs/index.js
+ * @LastEditors: cuijiajun
+ * @LastEditTime: 2020-10-09 16:30:13
+ * @FilePath: /sr2/src/libs/index.js
  */
+import { Loading } from 'element-ui';
 // eslint-disable-next-line import/prefer-default-export
 export const ajax = (setting) => {
+  const loadingInstance = Loading.service({ fullscreen: true });
   // 设置参数的初始值
   const opts = {
     method: (setting.method || 'GET').toUpperCase(), // 请求方式
@@ -51,6 +53,7 @@ export const ajax = (setting) => {
   ** 4 ：请求已完成，且相应就绪
   */
   xhr.onreadystatechange = function () {
+    loadingInstance.close();
     if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 304)) {
       switch (opts.dataType) {
         case 'json':
@@ -68,6 +71,7 @@ export const ajax = (setting) => {
   };
 
   xhr.onerror = function (err) {
+    loadingInstance.close();
     opts.error(err);
   };
 };
