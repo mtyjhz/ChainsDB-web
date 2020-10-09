@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 16:44:10
+ * @LastEditTime: 2020-10-09 18:46:40
  * @FilePath: /sr2/src/views/Generalquery.vue
 -->
 <!--  -->
@@ -214,24 +214,25 @@ export default {
     changePicker(e) {
       if (e) {
         // eslint-disable-next-line prefer-destructuring
-        this.params.timeBegin = e[0];
+        this.params.timeBegin = e[0] / 1000;
         // eslint-disable-next-line prefer-destructuring
-        this.params.timeEnd = e[1];
+        this.params.timeEnd = e[1] / 1000;
       }
     },
     handleChange(value) {
       // eslint-disable-next-line prefer-destructuring
-      // this.params = {
-      //   type: '',
-      //   addr: '',
-      //   timeBegin: '',
-      //   timeEnd: '',
-      //   transHash: '',
-      //   blockHash: '',
-      //   heightBegin: '',
-      //   heightEnd: '',
-      //   height: '',
-      // };
+      this.params = {
+        type: '',
+        addr: '',
+        timeBegin: '',
+        timeEnd: '',
+        transHash: '',
+        blockHash: '',
+        heightBegin: '',
+        heightEnd: '',
+        height: '',
+      };
+      // eslint-disable-next-line prefer-destructuring
       this.params.type = value[0];
     },
   },
