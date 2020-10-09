@@ -2,7 +2,7 @@
  * @Author: 崔佳俊
  * @Date: 2020-10-07 14:15:58
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 16:56:47
+ * @LastEditTime: 2020-10-09 18:50:12
  * @FilePath: /sr2/src/views/Home.vue
 -->
 <template>
@@ -92,41 +92,45 @@ export default {
     },
     handleClick() {
       getEthdb(this.query).then((res) => {
-        const resultDate = [];
-        if (res.data.columns.length > 0 && res.code === 0) {
+        if (res.code == 0) {
+          const resultDate = [];
+          if (res.data.columns.length > 0 && res.code === 0) {
           //   console.log(res);
-          const keyArr = res.data.columns.map((item) => item.name);
-          // eslint-disable-next-line no-plusplus
-          for (let index = 0; index < res.data.rows.length; index++) {
+            const keyArr = res.data.columns.map((item) => item.name);
+            // eslint-disable-next-line no-plusplus
+            for (let index = 0; index < res.data.rows.length; index++) {
             // const element = array[index];
             // eslint-disable-next-line no-undef
-            resultDate.push(this.transformObject(keyArr, res.data.rows[index]));
+              resultDate.push(this.transformObject(keyArr, res.data.rows[index]));
+            }
           }
-        }
 
-        // eslint-disable-next-line no-undef
-        const j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
-        j2ht.attributes = {
-          class:
+          // eslint-disable-next-line no-undef
+          const j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
+          j2ht.attributes = {
+            class:
             'j2ht_table table table-striped table-bordered table-hover dataTables-example',
-          cellspacing: '1',
-          cellpadding: '2',
-        };
-        j2ht.convert();
+            cellspacing: '1',
+            cellpadding: '2',
+          };
+          j2ht.convert();
 
-        // eslint-disable-next-line no-undef
-        $('.j2ht_table').dataTable({
-          ordering: false,
-          scrollX: true,
-          jQueryUI: true,
-          pageLength: 50,
-          // pagingType:{
+          // eslint-disable-next-line no-undef
+          $('.j2ht_table').dataTable({
+            ordering: false,
+            scrollX: true,
+            jQueryUI: true,
+            pageLength: 50,
+            // pagingType:{
 
-          // },
-          colReorder: {
-            realtime: true,
-          },
-        });
+            // },
+            colReorder: {
+              realtime: true,
+            },
+          });
+        } else {
+          this.$message.error(res.msg);
+        }
       });
     },
     onCodemirrorReady(cm) {

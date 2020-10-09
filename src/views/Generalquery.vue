@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 18:46:40
+ * @LastEditTime: 2020-10-09 18:48:51
  * @FilePath: /sr2/src/views/Generalquery.vue
 -->
 <!--  -->
@@ -208,6 +208,8 @@ export default {
               realtime: true,
             },
           });
+        } else {
+          this.$message.error(res.msg);
         }
       });
     },
