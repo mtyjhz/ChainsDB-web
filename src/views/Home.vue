@@ -2,7 +2,7 @@
  * @Author: 崔佳俊
  * @Date: 2020-10-07 14:15:58
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 18:50:12
+ * @LastEditTime: 2020-10-10 17:56:40
  * @FilePath: /sr2/src/views/Home.vue
 -->
 <template>
@@ -16,14 +16,13 @@
         :options="cmOptions"
       ></codemirror>
     </div>
-    <div class="content" style="text-align: right;">
-
+    <div class="content" style="text-align: right">
       <router-link to="/Generalquery">
         <el-button type="primary" style="margin-left: 10px" to="/"
           >General query</el-button
         >
       </router-link>
-        <el-button
+      <el-button
         type="primary"
         icon="el-icon-search"
         style="margin-left: 10px"
@@ -31,13 +30,56 @@
       >
         search</el-button
       >
+      <el-popover
+        placement="top-start"
+        title="Query tips"
+        width="200"
+        trigger="hover"
+        content="Currently, only 1000 query results are supported."
+      >
+        <i
+          slot="reference"
+          style="margin: 10px"
+          class="header-icon el-icon-info"
+        ></i>
+      </el-popover>
       <p class="how-to-query">
-        <router-link to="/table">
-          How to query?
+        <router-link to="/download" style="margin-right: 20px">
+          Data download
         </router-link>
+        <router-link to="/table"> How to query? </router-link>
       </p>
     </div>
     <div id="divMain"></div>
+    <el-table
+      :data="
+        tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+      "
+      style="width: 100%"
+    >
+      <el-table-column
+        v-for="(item, index) in columns"
+        :key="index"
+        :prop="item.name"
+        :label="item.name"
+        width="180"
+      >
+      </el-table-column>
+    </el-table>
+    <!-- 分页器 -->
+    <div class="block" style="margin-top: 15px">
+      <el-pagination
+        align="center"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[1, 5, 10, 20]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -63,8 +105,13 @@ export default {
   data() {
     return {
       query: {
-        sql: 'SELECT * FROM ethblock LIMIT 2',
+        sql: 'SELECT * FROM ethblock LIMIT 200',
       },
+      tableData: [],
+      currentPage: 1, // 当前页码
+      total: 20, // 总条数
+      pageSize: 10, // 每页的数据条数
+      columns: [],
       cmOptions: {
         scroll: false,
         tabSize: 4,
@@ -82,6 +129,16 @@ export default {
     };
   },
   methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+    },
+
     transformObject(keyArr, valueArr) {
       const obj = {};
       // eslint-disable-next-line array-callback-return
@@ -92,24 +149,34 @@ export default {
     },
     handleClick() {
       getEthdb(this.query).then((res) => {
-        if (res.code == 0) {
+        if (res.code === 0) {
+          if (res.data.rows.length <= 0) {
+            // eslint-disable-next-line no-undef
+            $('#divMain').children().remove();
+            this.$message.error('no data');
+            return;
+          }
+          this.columns = res.data.columns;
+
           const resultDate = [];
           if (res.data.columns.length > 0 && res.code === 0) {
-          //   console.log(res);
+            //   console.log(res);
             const keyArr = res.data.columns.map((item) => item.name);
             // eslint-disable-next-line no-plusplus
             for (let index = 0; index < res.data.rows.length; index++) {
-            // const element = array[index];
-            // eslint-disable-next-line no-undef
-              resultDate.push(this.transformObject(keyArr, res.data.rows[index]));
+              // const element = array[index];
+              // eslint-disable-next-line no-undef
+              resultDate.push(
+                this.transformObject(keyArr, res.data.rows[index]),
+              );
             }
           }
-
+          this.tableData = resultDate;
           // eslint-disable-next-line no-undef
           const j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
           j2ht.attributes = {
             class:
-            'j2ht_table table table-striped table-bordered table-hover dataTables-example',
+              'j2ht_table table table-striped table-bordered table-hover dataTables-example',
             cellspacing: '1',
             cellpadding: '2',
           };
@@ -120,16 +187,18 @@ export default {
             ordering: false,
             scrollX: true,
             jQueryUI: true,
-            pageLength: 50,
+            pageLength: 10,
             // pagingType:{
 
             // },
-            colReorder: {
-              realtime: true,
-            },
+            // colReorder: {
+            //   realtime: true,
+            // },
           });
         } else {
           this.$message.error(res.msg);
+          // eslint-disable-next-line no-undef
+          $('#divMain').children().remove();
         }
       });
     },
@@ -172,12 +241,12 @@ export default {
 // table tr:nth-child(even) {
 //   background: #f5fafa;
 // }
-.how-to-query{
-  margin:20px;
+.how-to-query {
+  margin: 20px;
 }
-table {
+/* table {
   table-layout: fixed;
-}
+} */
 thead td {
   font-weight: bold;
   background-image: linear-gradient(#e8eaec, #e8eaec),

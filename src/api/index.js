@@ -2,7 +2,7 @@
  * @Author: 崔佳俊
  * @Date: 2020-10-07 14:22:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 17:08:21
+ * @LastEditTime: 2020-10-10 16:51:29
  * @FilePath: /sr2/src/api/index.js
  */
 import { ajax } from '@/libs';
@@ -40,6 +40,20 @@ export const getquery = (data) => new Promise((resolve, reject) => {
 export const getdbTable = (data) => new Promise((resolve, reject) => {
   ajax({
     url: `${config.baseUrl}/index`,
+    method: 'get',
+    data,
+    success: (res) => {
+      resolve(res);
+    },
+    error: (error) => {
+      reject(error);
+    },
+  });
+});
+
+export const getCidlist = (data) => new Promise((resolve, reject) => {
+  ajax({
+    url: `${config.baseUrl}/cid`,
     method: 'get',
     data,
     success: (res) => {

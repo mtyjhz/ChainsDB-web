@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 18:48:51
+ * @LastEditTime: 2020-10-10 16:10:03
  * @FilePath: /sr2/src/views/Generalquery.vue
 -->
 <!--  -->
@@ -11,7 +11,7 @@
     <div class="select-box">
       <el-cascader
         v-model="value"
-        style="width: 300px"
+        class="input-box"
         :options="options"
         :props="{ expandTrigger: 'hover' }"
         @change="handleChange"
@@ -19,58 +19,75 @@
       <el-input
         v-model="params.addr"
         v-if="value.includes('1')"
-        style="width: 300px;margin-left:10px;"
+         class="input-box"
         placeholder="请输入地址"
       />
       <el-input
         v-model="params.height"
         v-if="value.includes('5')"
-        style="width: 300px;margin-left:10px;"
+           class="input-box"
         placeholder="请输入height"
       />
-       <el-input
+      <el-input
         v-model="params.heightBegin"
         v-if="value.includes('block')"
-        style="width: 300px;margin-left:10px;"
+            class="input-box"
         placeholder="请输入heightBegin"
       />
-       <el-input
+      <el-input
         v-model="params.heightEnd"
         v-if="value.includes('block')"
-        style="width: 300px;margin-left:10px;"
+            class="input-box"
         placeholder="请输入heightEnd"
       />
       <el-date-picker
-       v-model="time"
-       value-format='timestamp'
-      @change='changePicker'
-       v-if="value.includes('time')"
-       style="margin-left:10px;"
-
-      type="daterange"
-      range-separator="-"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期">
-    </el-date-picker>
+        v-model="time"
+        value-format="timestamp"
+        @change="changePicker"
+        v-if="value.includes('time')"
+         class="input-box"
+        type="daterange"
+        range-separator="-"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+      >
+      </el-date-picker>
       <el-input
         v-model="params.transHash"
         v-if="value.includes('2')"
-        style="width: 300px;margin-left:10px;"
+          class="input-box"
         placeholder="请输入transHash"
       />
       <el-input
         v-model="params.blockHash"
         v-if="value.includes('3')"
-        style="width: 300px;margin-left:10px;"
+          class="input-box"
         placeholder="请输入blockHash"
       />
-       <el-button type="primary" icon="el-icon-search" style="margin-left:10px;" @click="onSubmit">
-         search</el-button>
-         <router-link to='/' >
-       <el-button type="primary" style="margin-left:10px;" to='/'>Advanced query</el-button>
-        </router-link>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+          style="margin: 10px"
+        @click="onSubmit"
+      >
+        search</el-button
+      >
+      <router-link to="/">
+        <el-button type="primary" style="margin: 10px" to="/"
+          >Advanced query</el-button
+        >
+      </router-link>
+      <el-popover
+        placement="top-start"
+        title="Query tips"
+        width="200"
+        trigger="hover"
+        content="Currently, only 1000 query results are supported."
+      >
+        <i slot="reference" style="margin:10px"  class="header-icon el-icon-info"></i>
+      </el-popover>
     </div>
-     <div id="divMain"></div>
+    <div id="divMain"></div>
   </div>
 </template>
 
@@ -171,20 +188,24 @@ export default {
     },
     onSubmit() {
       getquery(this.params).then((res) => {
-        if (res.data.rows.length <= 0) {
-          this.$message.error('no data');
-          return;
-        }
         if (res.code === 0) {
+          if (res.data.rows.length <= 0) {
+          // eslint-disable-next-line no-undef
+            $('#divMain').children().remove();
+            this.$message.error('no data');
+            return;
+          }
           const resultDate = [];
           if (res.data.columns.length > 0 && res.code === 0) {
-          //   console.log(res);
+            //   console.log(res);
             const keyArr = res.data.columns.map((item) => item.name);
             // eslint-disable-next-line no-plusplus
             for (let index = 0; index < res.data.rows.length; index++) {
-            // const element = array[index];
-            // eslint-disable-next-line no-undef
-              resultDate.push(this.transformObject(keyArr, res.data.rows[index]));
+              // const element = array[index];
+              // eslint-disable-next-line no-undef
+              resultDate.push(
+                this.transformObject(keyArr, res.data.rows[index]),
+              );
             }
           }
 
@@ -192,7 +213,7 @@ export default {
           const j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
           j2ht.attributes = {
             class:
-            'j2ht_table table table-striped table-bordered table-hover dataTables-example',
+              'j2ht_table table table-striped table-bordered table-hover dataTables-example',
             cellspacing: '1',
             cellpadding: '2',
           };
@@ -203,13 +224,15 @@ export default {
             ordering: false,
             scrollX: true,
             jQueryUI: true,
-            pageLength: 50,
+            pageLength: 10,
             colReorder: {
               realtime: true,
             },
           });
         } else {
           this.$message.error(res.msg);
+          // eslint-disable-next-line no-undef
+          $('#divMain').children().remove();
         }
       });
     },
@@ -241,11 +264,15 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
+.input-box{
+  margin: 5px;
+ width: 300px;
+}
 #divMain {
   padding: 20px;
   width: 100%;
 }
-.router-text{
+.router-text {
   color: #007bff;
   line-height: 2.5;
 }

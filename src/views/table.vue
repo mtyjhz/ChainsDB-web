@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 16:47:38
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 17:31:23
+ * @LastEditTime: 2020-10-10 16:45:40
  * @FilePath: /sr2/src/views/table.vue
 -->
 <!--  -->
@@ -33,7 +33,7 @@ export default {
 
   data() {
     return {
-      activeNames: ['1'],
+      activeNames: [1],
       resDate: [],
     };
   },

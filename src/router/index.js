@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-09 17:03:22
+ * @LastEditTime: 2020-10-10 16:35:23
  * @FilePath: /sr2/src/router/index.js
  */
 import Vue from 'vue';
@@ -32,10 +32,18 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "table" */ '../views/table.vue'),
   },
+  {
+    path: '/download',
+    name: 'download',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "table" */ '../views/download.vue'),
+  },
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
 });
