@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 16:10:03
+ * @LastEditTime: 2020-10-10 18:07:34
  * @FilePath: /sr2/src/views/Generalquery.vue
 -->
 <!--  -->
@@ -87,7 +87,39 @@
         <i slot="reference" style="margin:10px"  class="header-icon el-icon-info"></i>
       </el-popover>
     </div>
-    <div id="divMain"></div>
+       <div id="divMain" v-show="columns.length>0">
+      <el-table
+       stripe
+        :data="
+          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
+        style="width: 100%"
+      >
+        <el-table-column
+          v-for="(item, index) in columns"
+          :key="index"
+          :prop="item.name"
+          :label="item.name"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <div class="block" style="margin-top: 15px">
+        <el-pagination
+          align="center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[1, 5, 10, 20]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="tableData.length"
+        >
+        </el-pagination>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -102,6 +134,11 @@ export default {
     return {
       time: [],
       value: [],
+      tableData: [],
+      currentPage: 1, // 当前页码
+      total: 20, // 总条数
+      pageSize: 10, // 每页的数据条数
+      columns: [],
       params: {
         type: '',
         addr: '',
@@ -177,6 +214,15 @@ export default {
   },
 
   methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+    },
     // 方法
     transformObject(keyArr, valueArr) {
       const obj = {};
@@ -190,11 +236,13 @@ export default {
       getquery(this.params).then((res) => {
         if (res.code === 0) {
           if (res.data.rows.length <= 0) {
-          // eslint-disable-next-line no-undef
-            $('#divMain').children().remove();
+            // eslint-disable-next-line no-undef
+
             this.$message.error('no data');
+            this.tableData = [];
             return;
           }
+          this.columns = res.data.columns;
           const resultDate = [];
           if (res.data.columns.length > 0 && res.code === 0) {
             //   console.log(res);
@@ -208,31 +256,11 @@ export default {
               );
             }
           }
-
-          // eslint-disable-next-line no-undef
-          const j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
-          j2ht.attributes = {
-            class:
-              'j2ht_table table table-striped table-bordered table-hover dataTables-example',
-            cellspacing: '1',
-            cellpadding: '2',
-          };
-          j2ht.convert();
-
-          // eslint-disable-next-line no-undef
-          $('.j2ht_table').dataTable({
-            ordering: false,
-            scrollX: true,
-            jQueryUI: true,
-            pageLength: 10,
-            colReorder: {
-              realtime: true,
-            },
-          });
+          this.tableData = resultDate;
         } else {
           this.$message.error(res.msg);
           // eslint-disable-next-line no-undef
-          $('#divMain').children().remove();
+          this.tableData = [];
         }
       });
     },

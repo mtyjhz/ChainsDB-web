@@ -2,7 +2,7 @@
  * @Author: 崔佳俊
  * @Date: 2020-10-07 14:15:58
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 17:56:40
+ * @LastEditTime: 2020-10-10 18:13:32
  * @FilePath: /sr2/src/views/Home.vue
 -->
 <template>
@@ -50,35 +50,39 @@
         <router-link to="/table"> How to query? </router-link>
       </p>
     </div>
-    <div id="divMain"></div>
-    <el-table
-      :data="
-        tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-      "
-      style="width: 100%"
-    >
-      <el-table-column
-        v-for="(item, index) in columns"
-        :key="index"
-        :prop="item.name"
-        :label="item.name"
-        width="180"
+    <div id="divMain" v-show="columns.length>0">
+      <el-table
+       stripe
+        :data="
+          tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
+        style="width: 100%"
       >
-      </el-table-column>
-    </el-table>
-    <!-- 分页器 -->
-    <div class="block" style="margin-top: 15px">
-      <el-pagination
+        <el-table-column
         align="center"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[1, 5, 10, 20]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.length"
-      >
-      </el-pagination>
+          v-for="(item, index) in columns"
+          :key="index"
+          :prop="item.name"
+          :label="item.name"
+          width="180"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <div class="block" style="margin-top: 15px">
+        <el-pagination
+          align="center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[1, 5, 10, 20]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="tableData.length"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -152,8 +156,9 @@ export default {
         if (res.code === 0) {
           if (res.data.rows.length <= 0) {
             // eslint-disable-next-line no-undef
-            $('#divMain').children().remove();
+
             this.$message.error('no data');
+            this.tableData = [];
             return;
           }
           this.columns = res.data.columns;
@@ -172,33 +177,10 @@ export default {
             }
           }
           this.tableData = resultDate;
-          // eslint-disable-next-line no-undef
-          const j2ht = new J2HConverter(JSON.stringify(resultDate), 'divMain');
-          j2ht.attributes = {
-            class:
-              'j2ht_table table table-striped table-bordered table-hover dataTables-example',
-            cellspacing: '1',
-            cellpadding: '2',
-          };
-          j2ht.convert();
-
-          // eslint-disable-next-line no-undef
-          $('.j2ht_table').dataTable({
-            ordering: false,
-            scrollX: true,
-            jQueryUI: true,
-            pageLength: 10,
-            // pagingType:{
-
-            // },
-            // colReorder: {
-            //   realtime: true,
-            // },
-          });
         } else {
           this.$message.error(res.msg);
-          // eslint-disable-next-line no-undef
-          $('#divMain').children().remove();
+
+          this.tableData = [];
         }
       });
     },

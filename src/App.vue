@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 09:54:28
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 17:41:42
+ * @LastEditTime: 2020-10-10 18:12:09
  * @FilePath: /sr2/src/App.vue
 -->
 <template>
@@ -18,6 +18,9 @@
 </template>
 
 <style lang="scss">
+a{
+color: #409eff;
+}
 .dataTables_scrollHeadInner{
   margin: 0 auto;
 }
