@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 09:54:28
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 18:12:09
+ * @LastEditTime: 2020-10-12 15:53:44
  * @FilePath: /sr2/src/App.vue
 -->
 <template>
@@ -18,6 +18,9 @@
 </template>
 
 <style lang="scss">
+.el-collapse-item__header{
+  font-size: 20px !important;
+}
 a{
 color: #409eff;
 }

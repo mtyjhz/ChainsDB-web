@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-12 10:04:32
+ * @LastEditTime: 2020-10-12 15:52:24
  * @FilePath: /sr2/src/views/Generalquery.vue
 -->
 <!--  -->
@@ -211,6 +211,7 @@ export default {
   },
 
   methods: {
+
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.currentPage = 1;
@@ -305,4 +306,5 @@ export default {
   padding: 40px;
   text-align: center;
 }
+
 </style>

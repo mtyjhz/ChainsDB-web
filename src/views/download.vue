@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-10 15:56:51
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-12 11:47:06
+ * @LastEditTime: 2020-10-12 15:54:11
  * @FilePath: /sr2/src/views/download.vue
 -->
 <!--  -->
@@ -21,7 +21,7 @@
       style="width: 100%"
       :row-class-name="tableRowClassName"
     >
-      <el-table-column prop="value" label="Cid" >
+      <el-table-column prop="value" label="CID" >
         <template slot-scope="{row}">
           <div v-for="(item,index) in row.value" :key="index">
             {{item}}
