@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 14:08:44
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 18:07:34
+ * @LastEditTime: 2020-10-12 10:04:32
  * @FilePath: /sr2/src/views/Generalquery.vue
 -->
 <!--  -->
@@ -20,25 +20,25 @@
         v-model="params.addr"
         v-if="value.includes('1')"
          class="input-box"
-        placeholder="请输入地址"
+        placeholder="please enter addr"
       />
       <el-input
         v-model="params.height"
         v-if="value.includes('5')"
            class="input-box"
-        placeholder="请输入height"
+        placeholder="please enter height"
       />
       <el-input
         v-model="params.heightBegin"
         v-if="value.includes('block')"
             class="input-box"
-        placeholder="请输入heightBegin"
+        placeholder="please enter heightBegin"
       />
       <el-input
         v-model="params.heightEnd"
         v-if="value.includes('block')"
             class="input-box"
-        placeholder="请输入heightEnd"
+        placeholder="please enter heightEnd"
       />
       <el-date-picker
         v-model="time"
@@ -48,21 +48,21 @@
          class="input-box"
         type="daterange"
         range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        start-placeholder="time-begin"
+        end-placeholder="time-end"
       >
       </el-date-picker>
       <el-input
         v-model="params.transHash"
         v-if="value.includes('2')"
           class="input-box"
-        placeholder="请输入transHash"
+        placeholder="please enter transHash"
       />
       <el-input
         v-model="params.blockHash"
         v-if="value.includes('3')"
           class="input-box"
-        placeholder="请输入blockHash"
+        placeholder="please enter blockHash"
       />
       <el-button
         type="primary"
@@ -125,9 +125,6 @@
 
 <script>
 import { getquery } from '@/api';
-
-// eslint-disable-next-line import/extensions
-import { J2HConverter } from '@/assets/j2h-converter.js';
 
 export default {
   data() {

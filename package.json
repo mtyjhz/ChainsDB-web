@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "release":"scp -r ./dist/ fil@10.0.0.3:~"
+    "release":"scp -r -P 20022 ./dist/ fil@122.225.68.90:~"
   },
   "dependencies": {
     "codemirror": "^5.58.1",

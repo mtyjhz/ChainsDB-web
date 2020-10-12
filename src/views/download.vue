@@ -2,25 +2,33 @@
  * @Author: cuijiajun
  * @Date: 2020-10-10 15:56:51
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 16:51:10
+ * @LastEditTime: 2020-10-12 11:47:06
  * @FilePath: /sr2/src/views/download.vue
 -->
 <!--  -->
 <template>
   <div class="download">
+      <div>
+         <el-button
+        type="primary"
+        style="margin: 10px"
+        @click="handleClick"
+      >
+        Go Back</el-button>
+      </div>
     <el-table
       :data="tableData"
       style="width: 100%"
       :row-class-name="tableRowClassName"
     >
-      <el-table-column prop="value" label="cid" >
+      <el-table-column prop="value" label="Cid" >
         <template slot-scope="{row}">
           <div v-for="(item,index) in row.value" :key="index">
             {{item}}
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="describe" > </el-table-column>
+      <el-table-column prop="describe" label="Description" > </el-table-column>
     </el-table>
   </div>
 </template>
@@ -145,6 +153,9 @@ export default {
 
   methods: {
     // 方法
+    handleClick() {
+      this.$router.go(-1);
+    },
     tableRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
         return 'warning-row';

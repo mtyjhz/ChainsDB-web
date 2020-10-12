@@ -2,12 +2,20 @@
  * @Author: cuijiajun
  * @Date: 2020-10-09 16:47:38
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 16:45:40
+ * @LastEditTime: 2020-10-12 10:00:39
  * @FilePath: /sr2/src/views/table.vue
 -->
 <!--  -->
 <template>
   <div class="tabledb">
+   <div>
+         <el-button
+        type="primary"
+        style="margin: 10px"
+        @click="()=>{$router.go(-1)}"
+      >
+        Go Back</el-button>
+      </div>
     <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="(item,index) in resDate"
        :key="index"  :name="index">

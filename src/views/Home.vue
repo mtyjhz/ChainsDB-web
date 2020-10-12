@@ -2,7 +2,7 @@
  * @Author: 崔佳俊
  * @Date: 2020-10-07 14:15:58
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-10 18:13:32
+ * @LastEditTime: 2020-10-12 11:48:37
  * @FilePath: /sr2/src/views/Home.vue
 -->
 <template>
@@ -45,7 +45,7 @@
       </el-popover>
       <p class="how-to-query">
         <router-link to="/download" style="margin-right: 20px">
-          Data download
+          Data links
         </router-link>
         <router-link to="/table"> How to query? </router-link>
       </p>
