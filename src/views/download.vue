@@ -2,7 +2,7 @@
  * @Author: cuijiajun
  * @Date: 2020-10-10 15:56:51
  * @LastEditors: cuijiajun
- * @LastEditTime: 2020-10-12 15:54:11
+ * @LastEditTime: 2020-10-20 14:26:17
  * @FilePath: /sr2/src/views/download.vue
 -->
 <!--  -->
@@ -21,13 +21,14 @@
       style="width: 100%"
       :row-class-name="tableRowClassName"
     >
-      <el-table-column prop="value" label="CID" >
-        <template slot-scope="{row}">
+      <el-table-column prop="cid" label="CID" >
+        <!-- <template slot-scope="{row}">
           <div v-for="(item,index) in row.value" :key="index">
-            {{item}}
+            {{item.cid}}    status: {{item.status}}
           </div>
-        </template>
+        </template> -->
       </el-table-column>
+      <el-table-column prop="status" label="Status" > </el-table-column>
       <el-table-column prop="describe" label="Description" > </el-table-column>
     </el-table>
   </div>
@@ -169,7 +170,12 @@ export default {
   created() {
     getCidlist().then((res) => {
       if (res.code === 0) {
-        this.tableData = res.data;
+        const arr = res.data.map((item) => item.value.map((e) => {
+          e.describe = item.describe;
+          return e;
+        }));
+
+        this.tableData = arr.flat();
       }
     });
   },
